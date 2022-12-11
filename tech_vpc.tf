@@ -39,7 +39,7 @@ resource "aws_subnet" "public_subnet_web2" {
 
 # Defination of public RouteTable
 resource "aws_route_table" "public_rt" {
-  vpc_id = aws_vpc.techvpc.id
+  vpc_id = aws_vpc.tech_vpc.id
 
   route {
     cidr_block = "0.0.0.0/0"
@@ -68,7 +68,7 @@ resource "aws_subnet" "private_subnet_app1" {
   vpc_id                  = aws_vpc.tech_vpc.id
   cidr_block              = "${var.private_subnet_app1_cidr}"
   availability_zone       = "us-east-1a"
-  map_private_ip_on_launch = true
+  #map_private_ip_on_launch = true
   tags      = {
     Name    = "private_subnet_app1"
   }
@@ -79,7 +79,7 @@ resource "aws_subnet" "private_subnet_app2" {
   vpc_id                  = aws_vpc.tech_vpc.id
   cidr_block              = "${var.private_subnet_app2_cidr}"
   availability_zone       = "us-east-1b"
-  map_private_ip_on_launch = true
+  #map_private_ip_on_launch = true
   tags      = {
     Name    = "private_subnet_app2"
   }
@@ -90,7 +90,7 @@ resource "aws_subnet" "private_subnet_db1" {
   vpc_id                  = aws_vpc.tech_vpc.id
   cidr_block              = "${var.private_subnet_db1_cidr}"
   availability_zone       = "us-east-1a"
-  map_private_ip_on_launch = true
+  #map_private_ip_on_launch = true
   tags      = {
     Name    = "private_subnet_db1"
   }
@@ -101,7 +101,7 @@ resource "aws_subnet" "private_subnet_db2" {
   vpc_id                  = aws_vpc.tech_vpc.id
   cidr_block              = "${var.private_subnet_db2_cidr}"
   availability_zone       = "us-east-1b"
-  map_private_ip_on_launch = true
+  #map_private_ip_on_launch = true
   tags      = {
     Name    = "private_subnet_db2"
   }
@@ -327,7 +327,7 @@ resource "aws_instance" "tech_web_ec2_template" {
 resource "aws_instance" "tech_app_ec2_template" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = "t3.micro"
-  subnet_id              = aws_subnet.public_subnet_app1.id
+  subnet_id              = aws_subnet.private_subnet_app1.id
   vpc_security_group_ids = [aws_security_group.tech_app_sg.id]
   key_name               = "tech_key"
 
@@ -369,7 +369,7 @@ resource "aws_launch_template" "tech_asg_template_app" {
   key_name      = "tech_key"
 
   network_interfaces {
-    subnet_id       = aws_subnet.public_subnet_app1.id
+    subnet_id       = aws_subnet.private_subnet_app1.id
     security_groups = [aws_security_group.tech_app_sg.id]
   }
 }
@@ -403,7 +403,7 @@ resource "aws_lb" "tech_alb" {
 
 # Defination of application load balaner target group
 resource "aws_lb_target_group" "tech_alb_tg" {
-  name     = "tech_alb_tg"
+  name     = "techalbtg"
   port     = 80
   protocol = "HTTP"
   vpc_id   = aws_vpc.tech_vpc.id
