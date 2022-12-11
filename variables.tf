@@ -49,7 +49,7 @@ variable "private_subnet_db2_cidr" {
 
 # security group for application tier
 variable "ssh_ip" {
-  default     = "yourip"
+  default     = "117.201.220.172/32" #local system ipconfig has to be updated 
   description = "ip address"
   type        = string
 }
